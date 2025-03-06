@@ -1,13 +1,13 @@
 # PeopleAgent
 
 An AI assistant analyzing Microsoft 365 user queries and providing below information.
-        - profile: Basic user information, timezone, location
-        - manager: Manager details and location
-        - reports: Direct reports information
-        - devices: User's device information
-        - colleagues: Team members and collaborators
-        - documents: Authored documents and publications
-        - access: System access information
+- profile: Basic user information, timezone, location
+- manager: Manager details and location
+- reports: Direct reports information
+- devices: User's device information
+- colleagues: Team members and collaborators
+- documents: Authored documents and publications
+- access: System access information
 
 ## Features
 
@@ -88,8 +88,10 @@ PeopleAgent/
 
 ### Sample Applications
 
-GetUserDetails-Delegates/GetUser.py : Get specific user details using delegated permissions
-GetUserDetails-Application/GetAllUsers.py :  Retrieve all users in your organization using Application permissions
+##### GetUserDetails-Delegates/GetUser.py : 
+Get specific user details using delegated permissions
+##### GetUserDetails-Application/GetAllUsers.py :  
+Retrieve all users in your organization using Application permissions
 
 ### PeopleAgent Code
 
