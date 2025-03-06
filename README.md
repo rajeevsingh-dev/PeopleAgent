@@ -1,13 +1,33 @@
 # PeopleAgent
 
-An AI assistant analyzing Microsoft 365 user queries and providing below information.
-- profile: Basic user information, timezone, location
-- manager: Manager details and location
-- reports: Direct reports information
-- devices: User's device information
-- colleagues: Team members and collaborators
-- documents: Authored documents and publications
-- access: System access information
+PeopleAgent - Intelligent Microsoft 365 User Information Assistant
+A GenAI-powered conversational Chat AI that combines Microsoft Graph API data with Azure OpenAI to provide natural language interactions about Microsoft 365 users.
+
+
+## Core Architecture
+The application operates in three main flows:
+
+#### 1. Query Analysis (Azure OpenAI)
+
+- Interprets natural language queries
+- Determines required data categories (profile, manager, devices, etc.)
+- Converts user intent into structured API requests
+
+#### 2. Data Retrieval (Microsoft Graph API)
+
+- Fetches user information using application permissions
+- Supports multiple data endpoints:
+- User profiles and basic information
+- Organizational structure (managers/reports)
+- Device inventory
+- Document access
+- Team collaborations
+
+#### 3. Response Generation (Azure OpenAI)
+
+- Processes raw API data through LLM
+- Generates natural language responses
+- Provides conversational context management
 
 ## Features
 
@@ -37,17 +57,17 @@ PeopleAgent/
 
 ## Prerequisites
 
-- Python 3.9 or higher
+- [Python 3.9 or higher](https://www.python.org/downloads/)
 
-- MS Graph SDK: https://pypi.org/project/msgraph-sdk/
+- [Microsoft Graph SDK](https://pypi.org/project/msgraph-sdk/) Use the Microsoft Graph SDK for Python
 
-- App Registartion : https://learn.microsoft.com/en-us/entra/identity-platform/scenario-daemon-app-registration
+- [App Registration Guide](https://learn.microsoft.com/en-us/entra/identity-platform/scenario-daemon-app-registration) Register your application in Entra ID
 
-- Azure Identity (MSAL) : https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-daemon-app-call-api?pivots=workforce&tab=python-workforce&tabs=asp-dot-net-core-workforce%2Cnode-external
+- [Authentication Guide](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-daemon-app-call-api?pivots=workforce&tab=python-workforce&tabs=asp-dot-net-core-workforce%2Cnode-external) - Microsoft MSAL with client credentials flow
 
-- Graph API : https://learn.microsoft.com/en-us/graph/api/user-list?view=graph-rest-1.0&tabs=http
+- [Graph API Documentation](https://learn.microsoft.com/en-us/graph/api/user-list?view=graph-rest-1.0&tabs=http) Access user data using Microsoft Graph API.
 
-- Azure OpenAI : For natural language processing and response generation
+- [Azure OpenAI Service](https://azure.microsoft.com/en-us/products/ai-services/openai-service/) - For query analysis and response generation
 
 
 
@@ -99,8 +119,6 @@ Uses Client Credentials approach to fetch userDetails using Graph API.
 Data is ingested to LLM to get the interactive response.
 
 
-
-
 ## Contributing
 
 1. Fork the repository
@@ -116,3 +134,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 For support, please open an issue in the GitHub repository.
+
+
+## Quick Links
+
+[![Graph API](https://img.shields.io/badge/Graph%20API-Documentation-blue)](https://learn.microsoft.com/en-us/graph/api/overview)
+[![Python SDK](https://img.shields.io/badge/Python-SDK-yellow)](https://github.com/microsoftgraph/msgraph-sdk-python)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
