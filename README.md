@@ -138,12 +138,12 @@ The original implementation that uses a sophisticated approach to provide an int
 #### PeopleAgent_v2
 The v2 implementation features a modular architecture that separates concerns for better maintainability, improved error handling, and enhanced performance when processing user queries about Microsoft 365 users.
 
-> Refer for more details: [PeopleAgentv2/README.md](./PeopleAgentv2/README.md).
+> Refer for more details: [PeopleAgentv2/Readme.md](./PeopleAgentv2/Readme.md).
 
 #### PeopleAgent_v3
 This version introduces advanced memory management and streaming capabilities to maintain conversation context and deliver real-time responses. It builds on previous implementations by integrating persistent storage, context sharing, and enhanced logging to optimize conversational interactions.
 
-> Refer for more details: [PeopleAgentv3/Readme.md.md](./PeopleAgentv3/Readme.md).
+> Refer for more details: [PeopleAgentv3/Readme.md](./PeopleAgentv3/Readme.md).
 
 
 > **NOTE:** To refer all version details, navigate to [PeopleAgent_version_details.md](./PeopleAgent_version_details.md).

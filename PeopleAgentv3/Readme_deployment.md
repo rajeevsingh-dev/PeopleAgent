@@ -1,6 +1,6 @@
 # PeopleAgent_v3
 
-#####  Summary of UI page:
+##  Summary of UI page:
 The UI page is built with Gradio and serves as a chatbot interface for interacting with PeopleAgent. It provides the following features:
 
 ###### Custom Chat Interface: 
@@ -12,7 +12,7 @@ Integrates streaming response handling by iterating over response chunks from Pe
 ###### Logging: 
 Provides detailed logging (including timing details) for every significant event (agent creation, response chunks, and memory clearance), which is useful for debugging.
 
-##### Why FastAPI is Needed for Deployment to App Service?
+## Why FastAPI is Needed for Deployment to App Service?
 
 ###### HTTP Server Capabilities: 
 FastAPI acts as the backend server, exposing the UI as an HTTP endpoint. This makes it possible to deploy the app as a web service.

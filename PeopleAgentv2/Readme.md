@@ -1,5 +1,6 @@
 
-#### PeopleAgent_v2 (Enhanced Version)
+# PeopleAgent_v2 (Enhanced Version)
+
 The improved version with additional features:
 
 - Module based code
@@ -42,7 +43,7 @@ PeopleAgentv2/
 
 ```
 
-### Key Files in PeopleAgentv2
+## Key Files in PeopleAgentv2
 
 - **PeopleAgent_v2.py**: Main application entry point that orchestrates the enhanced conversation flow
 - **authentication.py**: Handles secure authentication with Microsoft Graph using MSAL
