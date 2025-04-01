@@ -118,5 +118,4 @@ def bot(message: str, history: list):
             logger.debug(f"Chunk received at {time.strftime('%H:%M:%S')}: {chunk[:50]}... (length: {len(chunk)})")
             history[-1]["content"] += chunk
             yield history
-`
 
