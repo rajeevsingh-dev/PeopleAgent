@@ -38,7 +38,7 @@ The application operates in three main flows:
 - PeopleAgent - to provide user information
 
 
-## Project Structure
+## Project Structure (PeopleAgent folder)
 
 ```
 PeopleAgent/
@@ -46,6 +46,8 @@ PeopleAgent/
 │   ├── logs/
 │   ├── parameters.json
 │   └── PeopleAgent_v1.py
+├── PeopleAgentv2/
+│   
 ├── Samples/
 │   ├── GetUserDetails-Application/
 │   │   ├── GetAllUsers.py
@@ -105,19 +107,46 @@ PeopleAgent/
     }
    ```
 
+## Usage
 
-### Sample Applications
+After setting up your environment and configurations, you can:
 
-##### GetUserDetails-Delegates/GetUser.py : 
-Get specific user details using delegated permissions
-##### GetUserDetails-Application/GetAllUsers.py :  
-Retrieve all users in your organization using Application permissions
+1. Run the sample applications to test Graph API connectivity
+2. Execute the PeopleAgent to interact with user data through natural language queries
+3. Ask questions about users in your organization through the conversational interface
 
-### PeopleAgent Code
+### PeopleAgent version details
 
-Uses Client Credentials approach to fetch userDetails using Graph API. 
-Data is ingested to LLM to get the interactive response.
+This code is based on below feature implementations.
 
+
+
+
+
+### PeopleAgent Implementation
+
+#### PeopleAgent_v1.py
+The original implementation that uses a sophisticated approach to provide an intelligent assistant for Microsoft 365 user information:
+
+- Implements client credentials flow to authenticate with Microsoft Graph API
+- Fetches comprehensive user details including profiles, roles, and relationships
+- Processes natural language questions through Azure OpenAI
+- Maintains conversation history for contextual understanding
+- Formats responses in a user-friendly, conversational manner
+- Handles various query types (find user, report structure, device information, etc.)
+
+#### PeopleAgent_v2
+The v2 implementation features a modular architecture that separates concerns for better maintainability, improved error handling, and enhanced performance when processing user queries about Microsoft 365 users.
+
+> Refer for more details: [PeopleAgentv2/README.md](./PeopleAgentv2/README.md).
+
+#### PeopleAgent_v3
+This version introduces advanced memory management and streaming capabilities to maintain conversation context and deliver real-time responses. It builds on previous implementations by integrating persistent storage, context sharing, and enhanced logging to optimize conversational interactions.
+
+> Refer for more details: [PeopleAgentv3/Readme.md.md](./PeopleAgentv3/Readme.md).
+
+
+> **NOTE:** To refer all version details, navigate to [PeopleAgent_version_details.md](./PeopleAgent_version_details.md).
 
 ## Contributing
 
