@@ -1,4 +1,3 @@
-
 # PeopleAgent_v2 (Enhanced Version)
 
 The improved version with additional features:
@@ -19,38 +18,22 @@ Example queries you can ask:
 
 ## PeopleAgentv2 Directory Structure
 
-The PeopleAgentv2 folder contains the enhanced version of our solution with improved architecture and capabilities:
-
 ```
 PeopleAgentv2/
 
 ├── CORE/
-│   ├── authentication.py       # Microsoft Graph authentication handler
-│   ├── conversation.py         # Conversation state management
-│   ├── graph_client.py         # Microsoft Graph API client wrapper
-│   ├── llm_processor.py        # Azure OpenAI integration for language processing
-│   └── query_analyzer.py       # User query analysis and intent detection
-|   |__ 
+|   |__ main.py                 # serves as the primary entry point for the PeopleAgent application.
+│   ├── people_agent.py         # Main application entry point that orchestrates the enhanced conversation flow.
+│   ├── ai_analysis.py          # Used for query processing, file is a core component of the PeopleAgent system that handles natural language query analysis.
+│   ├── response_generation.py  # Used for converting structured data into natural language responses using Azure OpenAI.
+|   |__ ms_grapg_client.py      # Used for Microsoft Graph API interactions.
+|   |__ auth.py                 # Used for Microsoft authentication, Acquire access token using MSAL (client credentials).
+|   |__ data_service.py         # to be used for Data Caching (Redis-based caching, Reduces API calls to Microsoft Graph etc.)
+|   |__ services.py             # to be designed as a service layer module for handling user-related operations in the PeopleAgent application
 ├── UTIL/
-│   ├── error_handler.py        # Centralized error handling
-│   ├── logger.py               # Logging utility functions
-│   └── response_formatter.py   # Output formatting for different response types
+│   ├── logging_setup.py        # The purpose of logging_setup.py is to configure the application's logging system. 
 ├── UI/
-│   ├── error_handler.py        # Centralized error handling
-│   ├── logger.py               # Logging utility functions
-│   └── response_formatter.py   # Output formatting for different response types
-
-
+│   ├── UI.py                   # Front end related code
 ```
-
-## Key Files in PeopleAgentv2
-
-- **PeopleAgent_v2.py**: Main application entry point that orchestrates the enhanced conversation flow
-- **authentication.py**: Handles secure authentication with Microsoft Graph using MSAL
-- **graph_client.py**: Manages all Graph API requests with improved caching and error handling
-- **llm_processor.py**: Processes natural language through Azure OpenAI with enhanced prompt engineering
-- **query_analyzer.py**: Analyzes user queries to determine intent and required Graph API endpoints
-- **conversation.py**: Maintains conversation state and history for contextual responses
-- **response_formatter.py**: Formats API responses into natural language with improved readability
 
 The v2 implementation features a modular architecture that separates concerns for better maintainability, improved error handling, and enhanced performance when processing user queries about Microsoft 365 users.

@@ -53,7 +53,7 @@ This document summarizes the evolution of PeopleAgent, outlining each version's 
       <td style="border: 1px solid #ddd; padding: 8px;">
         <span style="color:green;">✔</span> people_agent.py now maintains a conversation history and offers a clear_memory() method.<br>
         <span style="color:green;">✔</span> response_generation.py appends both the user query and agent response to history.<br>
-        <span style="color:green;">✔</span> UI_v1_1_memory_streaming.py caches PeopleAgent instances per user and clears memory when sessions end or users switch.<br>
+        <span style="color:green;">✔</span> UI_v3_memory_streaming.py caches PeopleAgent instances per user and clears memory when sessions end or users switch.<br>
         <span style="color:green;">✔</span> people_agent.py now supports streaming responses via process_query, yielding response chunks.<br>
         <span style="color:green;">✔</span> response_generation.py includes a generator function to yield updated responses.<br>
         <span style="color:green;">✔</span> UI_v1_1_memory_streaming.py iterates over the streaming generator, logs each chunk with timing details, and updates the UI in real time.<br>
