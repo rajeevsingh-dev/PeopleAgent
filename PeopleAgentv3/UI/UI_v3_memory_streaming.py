@@ -139,8 +139,8 @@ def bot(message: str, history: list):
     # Iterate over each response chunk.
     for chunk in response_generator:
         # Log each received chunk with a timestamp.
-        logger.debug(f"Received chunk: {chunk}")
-        logger.debug(f"Chunk received at {time.strftime('%H:%M:%S')}: {chunk[:50]}... (length: {len(chunk)})")
+        #logger.debug(f"Received chunk: {chunk}")
+        #logger.debug(f"Chunk received at {time.strftime('%H:%M:%S')}: {chunk[:50]}... (length: {len(chunk)})")
         answer += chunk
         yield answer
 

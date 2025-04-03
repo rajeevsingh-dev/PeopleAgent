@@ -35,7 +35,7 @@ The combination of Gradio for the interactive UI and FastAPI (powered by uvicorn
 1. Create an Azure App Service resource and deploy the app from VScode to App Service
 2. Go to Settings -> Environment variables -> Add the ENV variables  
 3. Go to Deployment -> Settings -> configuration and add the below command in the start up command:
-uvicorn PeopleAgentv2.UI.UI_v1_0:app --host 0.0.0.0 --port $PORT
+uvicorn PeopleAgentv3.UI.UI_v3:app --host 0.0.0.0 --port $PORT
 
 
 ## Sample Screenshot

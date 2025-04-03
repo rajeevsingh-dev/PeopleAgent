@@ -1,15 +1,6 @@
-
-#Your current design caches complete responses based on an exact query and context hash, 
-# so even if the underlying API data (like location) is already fetched and cached, 
-# a new query that asks only for a subset (e.g. "What is my Location?") 
-# won’t match the previously cached final answer.
-
-
-#in-memory cache with TTL support for API calls
-
 import logging
 import sys
-import asyncio
+import asyncio  # added import for asyncio
 from langchain_openai import AzureChatOpenAI
 from PeopleAgentv3.UTIL.config import load_config
 from PeopleAgentv3.UTIL.logging_setup import setup_logging
@@ -17,155 +8,71 @@ from PeopleAgentv3.CORE.auth import get_access_token
 from PeopleAgentv3.CORE.ms_graph_client import MSGraphClient
 from PeopleAgentv3.CORE.ai_analysis import analyze_query
 from PeopleAgentv3.CORE.response_generation import generate_response
-import time
-from functools import wraps
-import hashlib
 
-# Setup logger.
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)  # Enable debug messages
-
-# in-memory cache with TTL support for API calls
-def ttl_cache(ttl: int):
-    def decorator(func):
-        cache = {}
-        @wraps(func)
-        async def wrapper(*args, **kwargs):
-            key = (args, frozenset(kwargs.items()))
-            current_time = time.time()
-            if key in cache:
-                result, timestamp = cache[key]
-                if current_time - timestamp < ttl:
-                    self_logger = getattr(args[0], "logger", None)
-                    if self_logger:
-                        self_logger.debug(f"Cache hit for {func.__name__}")
-                    else:
-                        print(f"Cache hit for {func.__name__}")
-                    return result
-            result = await func(*args, **kwargs)
-            cache[key] = (result, current_time)
-            return result
-        return wrapper
-    return decorator
 
 class PeopleAgent:
     def __init__(self, user_identifier):
+        """
+        This agent uses a client credentials flow for Graph API queries.
+        """
         self.logger = logger
         self.config = load_config()
         setup_logging(self.config)
+
         self.access_token = get_access_token(self.config)
         if not self.access_token:
             self.logger.error("Failed to acquire access token.")
             sys.exit(1)
+
         self.logger.info(f"Initializing PeopleAgent for user: {user_identifier}")
         self.user_identifier = user_identifier
+
+         # Initialize conversation memory
         self.conversation_history = []
         self.memory_limit = self.config.get("CONVERSATION_MEMORY_LIMIT", 10)
+
+        # OpenAI client
         self.openai_client = AzureChatOpenAI(
             azure_deployment=self.config.get("AOAI_DEPLOYMENT", ""),
             api_version=self.config.get("AOAI_API_VERSION", "2024-02-15-preview"),
             api_key=self.config.get("AOAI_KEY", ""),
             azure_endpoint=self.config.get("AOAI_ENDPOINT", "")
         )
+
+        # MS Graph client
         self.graph_client = MSGraphClient(self.config, self.access_token)
 
-        # Final response caching for complete answers (TTL is in seconds)
-        self.response_cache = {}
-        self.response_cache_times = {}
-        self.response_cache_ttl = self.config.get("FINAL_RESPONSE_CACHE_TTL", 60)
+    async def analyze_query(self, user_query):
+        """
+        Determine answer intent via Azure OpenAI.
+        """
+        return analyze_query(self.openai_client, user_query)
 
-    # API-level caching with TTL (60 seconds in this example)
-    @ttl_cache(ttl=60)
-    async def get_user_profile(self):
-        return await self.graph_client.get_user_profile(self.user_identifier)
-
-    @ttl_cache(ttl=60)
-    async def get_manager_info(self):
-        return await self.graph_client.get_manager_info(self.user_identifier)
-
-    @ttl_cache(ttl=60)
-    async def get_direct_reports(self):
-        return await self.graph_client.get_direct_reports(self.user_identifier)
-
-    @ttl_cache(ttl=60)
-    async def get_devices(self):
-        return await self.graph_client.get_devices(self.user_identifier)
-
-    @ttl_cache(ttl=60)
-    async def get_colleagues(self):
-        return await self.graph_client.get_colleagues(self.user_identifier)
-
-    @ttl_cache(ttl=60)
-    async def get_documents(self):
-        return await self.graph_client.get_documents(self.user_identifier)
-
-    @ttl_cache(ttl=60)
     async def get_all_users(self):
         return await self.graph_client.get_all_users()
 
-    def _build_response_key(self, query, context):
-        """
-        Build a unique key for final response caching based on user identifier,
-        the query, and a hash of the context.
-        """
-        context_str = str(context)
-        context_hash = hashlib.md5(context_str.encode("utf-8")).hexdigest()
-        key = f"{self.user_identifier}:{query}:{context_hash}"
-        return key
+    async def find_user_by_name(self, name):
+        return await self.graph_client.find_user_by_name(name)
 
-    async def _process_query_core(self, user_query):
-        """
-        Main method:
-          1) Fetch data in parallel from all sources (API-level caching applied)
-          2) Check final response cache; if a fresh answer exists, return it
-          3) Otherwise, generate a new answer using the LLM and cache it
-          4) Update conversation history and return the response
-        """
-        self.conversation_history.append({"role": "user", "content": user_query})
-        
-        # Create asynchronous tasks for parallel API calls
-        tasks = {
-            "profile": asyncio.create_task(self.get_user_profile()),
-            "manager": asyncio.create_task(self.get_manager_info()),
-            "reports": asyncio.create_task(self.get_direct_reports()),
-            "devices": asyncio.create_task(self.get_devices()),
-            "colleagues": asyncio.create_task(self.get_colleagues()),
-            "documents": asyncio.create_task(self.get_documents()),
-            "all_users": asyncio.create_task(self.get_all_users())
-        }
+    async def get_user_profile(self):
+        return await self.graph_client.get_user_profile(self.user_identifier)
 
-        results = await asyncio.gather(*tasks.values(), return_exceptions=True)
-        data_sources = dict(zip(tasks.keys(), results))
+    async def get_manager_info(self):
+        return await self.graph_client.get_manager_info(self.user_identifier)
 
-        # Build a combined context from API results
-        context = {}
-        for key, data in data_sources.items():
-            if isinstance(data, Exception):
-                self.logger.error(f"Error fetching {key}: {data}")
-                context[key] = f"Error getting {key}: {str(data)}"
-            else:
-                context[key] = self.format_data(key, data)
+    async def get_direct_reports(self):
+        return await self.graph_client.get_direct_reports(self.user_identifier)
 
-        # Build a unique cache key based on the query and context
-        final_key = self._build_response_key(user_query, context)
-        now = time.time()
-        if final_key in self.response_cache and (now - self.response_cache_times.get(final_key, 0)) < self.response_cache_ttl:
-            self.logger.debug(f"Final response cache hit for key: {final_key}")
-            return self.response_cache[final_key]
+    async def get_devices(self):
+        return await self.graph_client.get_devices(self.user_identifier)
 
-        self.logger.info(f"Parallel API calls completed. Context: {context}")
-        response = self.generate_response(user_query, context)
-        self.conversation_history.append({"role": "assistant", "content": response})
+    async def get_colleagues(self):
+        return await self.graph_client.get_colleagues(self.user_identifier)
 
-        # Cache the generated response and record its timestamp
-        self.response_cache[final_key] = response
-        self.response_cache_times[final_key] = now
+    async def get_documents(self):
+        return await self.graph_client.get_documents(self.user_identifier)
 
-        if len(self.conversation_history) > self.memory_limit:
-            self.conversation_history = self.conversation_history[-self.memory_limit:]
-        self.logger.debug(f"Conversation history length: {len(self.conversation_history)}")
-        return response
-    
     def format_data(self, data_type, data):
         """
         Format different types of Graph API responses into structured content.
@@ -223,14 +130,62 @@ class PeopleAgent:
         except Exception as e:
             return f"Error formatting {data_type} data: {str(e)}"
         return result
-    
+
     def generate_response(self, query, context):
         """
         Use Azure OpenAI to generate a final natural language response.
         Includes conversation history for context awareness.
         """
         return generate_response(self.openai_client, query, context, self.conversation_history)
-    
+
+    async def _process_query_core(self, user_query):
+        """
+        Main method:
+          1) Query analysis
+          2) Data fetching
+          3) Response generation
+          4) Update conversation memory
+        """
+
+        # Add user query to conversation history
+        self.conversation_history.append({"role": "user", "content": user_query})
+
+        intents = await self.analyze_query(user_query)
+        context = {}
+        for intent in intents:
+            intent = intent.strip()
+            if intent == "profile":
+                raw_data = await self.get_user_profile()
+                context["profile"] = self.format_data("profile", raw_data)
+            elif intent == "manager":
+                raw_data = await self.get_manager_info()
+                context["manager"] = self.format_data("manager", raw_data)
+            elif intent == "reports":
+                raw_data = await self.get_direct_reports()
+                context["reports"] = self.format_data("reports", raw_data)
+            elif intent == "devices":
+                raw_data = await self.get_devices()
+                context["devices"] = self.format_data("devices", raw_data)
+            elif intent == "colleagues":
+                raw_data = await self.get_colleagues()
+                context["colleagues"] = self.format_data("colleagues", raw_data)
+            elif intent == "documents":
+                raw_data = await self.get_documents()
+                context["documents"] = self.format_data("documents", raw_data)
+            elif intent == "all_users":
+                raw_data = await self.get_all_users()
+                context["all_users"] = self.format_data("all_users", raw_data)
+
+        response = self.generate_response(user_query, context)
+        # Add agent response to conversation history
+        self.conversation_history.append({"role": "assistant", "content": response})
+
+        # Limit conversation history to prevent excessive token usage
+        if len(self.conversation_history) > self.memory_limit:
+            self.conversation_history = self.conversation_history[-self.memory_limit:]
+        self.logger.debug(f"Conversation history length: {len(self.conversation_history)}")
+        return response
+
     def process_query(self, query: str, stream: bool = True):
         full_response = asyncio.run(self._process_query_core(query))
         if stream:
@@ -239,7 +194,7 @@ class PeopleAgent:
                 yield full_response[i:i+chunk_size]
         else:
             return full_response
-    
+
     def clear_memory(self):
         """
         Clear conversation history when switching contexts or users.

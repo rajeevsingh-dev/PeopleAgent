@@ -43,9 +43,9 @@ def generate_response(openai_client, query, context, conversation_history=None):
      # Always add the current query and context as the latest message
     messages.append({"role": "user", "content": f"Query: {query}\nAvailable Data: {context}"})
     
-    #return openai_client.invoke(messages).content
+    return openai_client.invoke(messages).content
     # Slightly increased max_tokens for better completion
-    return openai_client.invoke(messages, max_tokens=225, temperature=0.3).content
+    #return openai_client.invoke(messages, max_tokens=225, temperature=0.3).content
 
 
 
