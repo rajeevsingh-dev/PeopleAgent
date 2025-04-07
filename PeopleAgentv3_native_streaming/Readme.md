@@ -55,4 +55,4 @@ If a response is cached and still valid, it is reused instead of invoking the LL
 
 > **NOTE:** For full details on Deployment, please navigate to [Readme_deployment.md](./Readme_deployment.md).
 
->> **NOTE:** Native Streaming feature implementation details are captured here [Readme_native_streaming.md](../PeopleAgentv3_native_streaming/Readme_native_streaming.md).
+> **NOTE:** Native Streaming feature implementation details are captured here [Readme_native_streaming.md](./Readme_native_streaming.md).
